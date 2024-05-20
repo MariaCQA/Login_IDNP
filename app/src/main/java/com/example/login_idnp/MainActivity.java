@@ -1,5 +1,8 @@
 package com.example.login_idnp;
+
+
 import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +14,10 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.login_idnp.databinding.ActivityMainBinding;
-import com.google.android.material.datepicker.SingleDateSelector;
 import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,14 +32,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-/*
-        if (getIntent().hasExtra("accountEntity")) {
-            accountEntity = getIntent().getParcelableExtra("accountEntity");
-            if (accountEntity != null) {
-                binding.editTextLogin.setText(accountEntity.getUsername());
-                binding.editTextPassword.setText(accountEntity.getPassword());
-            }
-        }*/
 
         EditText edtUsername = binding.editTextLogin;
         EditText edtPassword = binding.editTextPassword;
@@ -48,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edtUsername.getText().toString().equals("admin") && edtPassword.getText().toString().equals("admin")) {
+                if (accountEntity != null &&
+                        edtUsername.getText().toString().equals(accountEntity.getUsername()) &&
+                        edtPassword.getText().toString().equals(accountEntity.getPassword())) {
                     Toast.makeText(getApplicationContext(), "Bienvenido a mi app", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Bienvenido a mi App");
 
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.putExtra("ACCOUNT", accountEntityString);
                     startActivity(intent);
-
-
                 } else {
                     Toast.makeText(getApplicationContext(), "Error en la autenticacion", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Error en la autenticacion");
@@ -66,77 +59,31 @@ public class MainActivity extends AppCompatActivity {
 
         btnRegister.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-            //startActivity(intent);
             activityResultLauncher.launch(intent);
         });
     }
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
-
                 @Override
-
                 public void onActivityResult(ActivityResult activityResult) {
                     Integer resultCode = activityResult.getResultCode();
-                    Log.d("LoginActivity","ResultCode: "+resultCode);
-                    if(resultCode == AccountActivity.ACCOUNT_ACEPTAR) {
+                    Log.d("LoginActivity", "ResultCode: " + resultCode);
+                    if (resultCode == AccountActivity.ACCOUNT_ACEPTAR) {
                         Intent data = activityResult.getData();
-                        accountEntityString =data.getStringExtra(AccountActivity.ACCOUNT_RECORD);
+                        accountEntityString = data.getStringExtra(AccountActivity.ACCOUNT_RECORD);
 
                         Gson gson = new Gson();
-                        AccountEntity accountEntity = gson.fromJson(accountEntityString, AccountEntity.class);
+                        accountEntity = gson.fromJson(accountEntityString, AccountEntity.class);
                         String firstname = accountEntity.getFirstname();
-                        Toast.makeText(getApplicationContext(),"Nombre: "+firstname,Toast.LENGTH_SHORT).show();
-                        Log.d("LoginActivity","Nombre: "+firstname);
-
-                    }else if(resultCode==AccountActivity.ACCOUNT_CANCELAR){
-                        Toast.makeText(getApplicationContext(),"Cancelado",Toast.LENGTH_SHORT).show();
-                        Log.d("LoginActivity","Cancelado");
+                        Toast.makeText(getApplicationContext(), "Nombre: " + firstname, Toast.LENGTH_SHORT).show();
+                        Log.d("LoginActivity", "Nombre: " + firstname);
+                    } else if (resultCode == AccountActivity.ACCOUNT_CANCELAR) {
+                        Toast.makeText(getApplicationContext(), "Cancelado", Toast.LENGTH_SHORT).show();
+                        Log.d("LoginActivity", "Cancelado");
                     }
                 }
             }
     );
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
