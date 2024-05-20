@@ -1,5 +1,6 @@
 package com.example.login_idnp;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,12 +22,16 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        TextView welcomeText = findViewById(R.id.welcomeText);
+/*        TextView welcomeText = findViewById(R.id.welcomeText);
         String username = getIntent().getStringExtra("username");
 
         // Utilizar el recurso de cadena con el marcador de posición
         String welcomeMessage = "Bienvenido {username}";
-        welcomeText.setText(welcomeMessage);
+        welcomeText.setText(welcomeMessage);*/
+
+        String accountEntity=getIntent().getStringExtra("ACCOUNT");
+
+        Log.d("HomeActivity", "ACCOUNT");
     }
 }
 
